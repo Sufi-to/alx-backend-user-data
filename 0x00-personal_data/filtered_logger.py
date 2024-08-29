@@ -73,6 +73,7 @@ def main() -> None:
             line[5], line[6], line[7])
         logger.info(msg)
     db_con.cursor().close()
+    db_con.close()
 
 
 if __name__ == '__main__':
