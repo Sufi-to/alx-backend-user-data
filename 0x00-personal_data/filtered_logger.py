@@ -42,4 +42,3 @@ def get_logger() -> logging.Logger:
     logger.propagate = False
     logger.addHandler(handle)
     return logger
-    
