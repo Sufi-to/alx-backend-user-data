@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Module for filtering data and logging"""
 
+import os
 import re
+import mysql.connector as connector
 import logging
 from typing import List, Tuple
 
@@ -42,3 +44,16 @@ def get_logger() -> logging.Logger:
     logger.propagate = False
     logger.addHandler(handle)
     return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """
+    Returns a connector to the database
+    (mysql.connector.connection.MySQLConnection object).
+    """
+    return connector.connect(
+        user = os.getenv("PERSONAL_DATA_DB_USERNAME"),
+        password = os.getenv("PERSONAL_DATA_DB_PASSWORD"),
+        host = os.getenv("PERSONAL_DATA_DB_HOST"),
+        database = os.getenv("PERSONAL_DATA_DB_NAME")
+    )
