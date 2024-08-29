@@ -6,4 +6,5 @@ import bcrypt
 
 def hash_password(password: str) -> bytes:
     """Returns a hashed passoword"""
-    return bcrypt.hashpw(password, bcrypt.gensalt())
+    password_bytes = password.encode('utf-8')
+    return bcrypt.hashpw(password_bytes, bcrypt.gensalt())
