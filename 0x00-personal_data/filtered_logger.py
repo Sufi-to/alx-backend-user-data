@@ -57,3 +57,23 @@ def get_db() -> connector.connection.MySQLConnection:
         host=os.getenv("PERSONAL_DATA_DB_HOST"),
         database=os.getenv("PERSONAL_DATA_DB_NAME")
     )
+
+
+def main() -> None:
+    """Obtains the db connection and display the rows in a filtered format"""
+    logger = get_logger()
+    db_con = get_db()
+    rows = db_con.cursor().execute("Select * from user").fetchall()
+    for line in rows:
+        msg = (
+            "name={}; email={}; phone={}; ssn={}; "
+            "password={}; ip={}; last_login={}; user_agent={};"
+        ).format(
+            line[0], line[1], line[2], line[3], line[4],
+            line[5], line[6], line[7])
+        logger.info(msg)
+    db_con.cursor().close()
+
+
+if __name__ == '__main__':
+    main()
