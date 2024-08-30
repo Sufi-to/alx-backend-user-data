@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Module for filtering data and logging"""
 
+import logging
 import os
 import re
-import logging
 import mysql.connector
 from typing import List, Tuple
 
@@ -37,11 +37,11 @@ class RedactingFormatter(logging.Formatter):
 
 def get_logger() -> logging.Logger:
     """Returns a configured logger object"""
-    logger = get_logger('user_data')
+    logger = logging.getLogger('user_data')
     handle = logging.StreamHandler()
-    handle.setFormatter(RedactingFormatter(fields=PII_FIELDS))
     logger.setLevel(logging.INFO)
     logger.propagate = False
+    handle.setFormatter(RedactingFormatter(fields=PII_FIELDS))
     logger.addHandler(handle)
     return logger
 
