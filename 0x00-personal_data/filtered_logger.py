@@ -4,7 +4,7 @@
 import logging
 import os
 import re
-import mysql.connector as connector
+import mysql.connector
 from typing import List, Tuple
 
 
@@ -46,12 +46,12 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-def get_db() -> connector.connection.MySQLConnection:
+def get_db() -> mysql.connector.connection.MySQLConnection:
     """
     Returns a connector to the database
     (mysql.connector.connection.MySQLConnection object).
     """
-    return connector.connection.MYSQLConnection(
+    return mysql.connector.connection.MYSQLConnection(
         host=os.getenv("PERSONAL_DATA_DB_HOST", "localhost"),
         user=os.getenv("PERSONAL_DATA_DB_USERNAME", "root"),
         password=os.getenv("PERSONAL_DATA_DB_PASSWORD", ""),
