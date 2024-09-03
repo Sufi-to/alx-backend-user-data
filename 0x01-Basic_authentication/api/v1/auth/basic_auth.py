@@ -6,6 +6,7 @@ import binascii
 from api.v1.auth.auth import Auth
 from typing import Tuple, TypeVar
 from models.user import User
+# from flask import request
 
 
 class BasicAuth(Auth):
@@ -32,7 +33,7 @@ class BasicAuth(Auth):
         try:
             base64_as_bytes = str.encode(base64_authorization_header)
             return base64.b64decode(base64_as_bytes).decode('utf-8')
-        except binascii.Error:
+        except (binascii.Error, UnicodeDecodeError):
             return None
 
     def extract_user_credentials(self,
@@ -65,3 +66,21 @@ class BasicAuth(Auth):
             if i.is_valid_password(user_pwd):
                 return i
         return None
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """Returns the user instance for a request"""
+        auth_head = self.authorization_header(request)
+        if auth_head:
+            extr_base64 = self.extract_base64_authorization_header(auth_head)
+        else:
+            return None
+
+        de_head = self.decode_base64_authorization_header(extr_base64)
+        if de_head:
+            user_e, user_p = self.extract_user_credentials(de_head)
+        else:
+            return None
+
+        user_cred = self.user_object_from_credentials(user_e, user_p)
+
+        return user_cred if user_cred is not None else None
