@@ -4,6 +4,7 @@
 import base64
 import binascii
 from api.v1.auth.auth import Auth
+from typing import Tuple
 
 
 class BasicAuth(Auth):
@@ -32,3 +33,15 @@ class BasicAuth(Auth):
             return base64.b64decode(base64_as_bytes).decode('utf-8')
         except binascii.Error:
             return None
+
+    def extract_user_credentials(self,
+                                 decoded_base64_authorization_header: str
+                                 ) -> Tuple[str, str]:
+        """Extract username and password from the decoded base64 object"""
+        if decoded_base64_authorization_header is None \
+                or type(decoded_base64_authorization_header) != str:
+            return None, None
+        if ":" not in decoded_base64_authorization_header:
+            return None, None
+        username, password = decoded_base64_authorization_header.split(":")
+        return username, password
