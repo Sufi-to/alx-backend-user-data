@@ -4,7 +4,8 @@
 import base64
 import binascii
 from api.v1.auth.auth import Auth
-from typing import Tuple
+from typing import Tuple, TypeVar
+from models.user import User
 
 
 class BasicAuth(Auth):
@@ -45,3 +46,22 @@ class BasicAuth(Auth):
             return None, None
         username, password = decoded_base64_authorization_header.split(":")
         return username, password
+
+    def user_object_from_credentials(self,
+                                     user_email: str,
+                                     user_pwd: str) -> TypeVar('User'):
+        """Get a user instance based on his email and password"""
+        if user_email is None or type(user_email) != str:
+            return None
+        if user_pwd is None or type(user_pwd) != str:
+            return None
+
+        try:
+            all_users = User.search({'email': user_email})
+        except Exception:
+            return None
+
+        for i in all_users:
+            if i.is_valid_password(user_pwd):
+                return i
+        return None
