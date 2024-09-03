@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Module for basicauth authentication system for the api"""
 
+import base64
+import binascii
 from api.v1.auth.auth import Auth
 
 
@@ -16,3 +18,17 @@ class BasicAuth(Auth):
         if auth_head[0:6] != 'Basic ':
             return None
         return auth_head[6:]
+
+    def decode_base64_authorization_header(self,
+                                           base64_authorization_header: str
+                                           ) -> str:
+        """Decode the base64 string to utf-8 strings"""
+        if base64_authorization_header is None \
+                or type(base64_authorization_header) != str:
+            return None
+
+        try:
+            base64_as_bytes = str.encode(base64_authorization_header)
+            return base64.b64decode(base64_as_bytes).decode('utf-8')
+        except binascii.Error:
+            return None
