@@ -7,7 +7,7 @@ from typing import List, TypeVar
 
 class Auth:
     """template the authentication mechanism for the api"""
-    
+
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """Returns whether path is included in the excluded paths"""
         return False
