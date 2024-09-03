@@ -18,6 +18,9 @@ auth_type = getenv('AUTH_TYPE')
 if auth_type == 'auth':
     from api.v1.auth.auth import Auth
     auth = Auth()
+elif auth_type == 'basic_auth':
+    from api.v1.auth.basic_auth import BasicAuth
+    auth = BasicAuth()
 
 
 @app.before_request
@@ -25,10 +28,10 @@ def check_req():
     """Check the request and sets up the context"""
     if auth is None:
         return
-    exc_paths = ['/api/v1/status/',
+    excluded_paths = ['/api/v1/status/',
                  '/api/v1/unauthorized/',
                  '/api/v1/forbidden/']
-    req_auth = auth.require_auth(request.path, exc_paths)
+    req_auth = auth.require_auth(request.path, excluded_paths)
     if not req_auth:
         return
     if auth.authorization_header(request) is None:
