@@ -18,9 +18,18 @@ def status() -> str:
 def un_autorized() -> str:
     """ GET /api/v1/unauthorized
     Return:
-      - the unauthorized page
+      - an unauthorized json response
     """
     abort(401)
+
+
+@app_views.route('/forbidden', methods=['GET'], strict_slashes=False)
+def forbidden_re() -> str:
+    """ GET /api/v1/unauthorized
+    Return:
+      - a forbidden json response
+    """
+    abort(403)
 
 
 @app_views.route('/stats/', strict_slashes=False)
