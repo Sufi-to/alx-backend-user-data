@@ -29,8 +29,8 @@ def check_req():
     if auth is None:
         return
     excluded_paths = ['/api/v1/status/',
-                 '/api/v1/unauthorized/',
-                 '/api/v1/forbidden/']
+                      '/api/v1/unauthorized/',
+                      '/api/v1/forbidden/']
     req_auth = auth.require_auth(request.path, excluded_paths)
     if not req_auth:
         return
