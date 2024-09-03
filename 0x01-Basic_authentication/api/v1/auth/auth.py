@@ -20,7 +20,9 @@ class Auth:
 
     def authorization_header(self, request=None) -> str:
         """Checks the validity of a request"""
-        return None
+        if request is None or request.headers.get('Authorization') is None:
+            return None
+        return request.headers.get('Authorization')
 
     def current_user(self, request=None) -> TypeVar('User'):
         """Checks if the user is valid"""
