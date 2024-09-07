@@ -16,7 +16,7 @@ def user_login():
     password = request.form.get('password')
     if password is None or password == '':
         return jsonify({"error": "password missing"}), 400
-   
+
     try:
         all_users = User.search({'email': email})
     except Exception:
@@ -39,7 +39,8 @@ def user_login():
     return user_dict
 
 
-@app_views.route('auth_session/logout', methods=["DELETE"], strict_slashes=False)
+@app_views.route('auth_session/logout', methods=["DELETE"],
+                 strict_slashes=False)
 def user_logout():
     """Logout the user"""
     from api.v1.app import auth
