@@ -11,13 +11,13 @@ from uuid import uuid4
 from typing import Union
 
 
-def _hash_password(password):
+def _hash_password(password) -> str:
     """Returns a hashed and salted password in bytes"""
     byte_password = password.encode('utf-8')
     return bcrypt.hashpw(byte_password, bcrypt.gensalt())
 
 
-def _generate_uuid():
+def _generate_uuid() -> str:
     """Return a generated uuid string"""
     return str(uuid4())
 
