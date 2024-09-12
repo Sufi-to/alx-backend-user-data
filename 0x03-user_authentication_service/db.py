@@ -8,6 +8,7 @@ from sqlalchemy.orm.session import Session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import InvalidRequestError
+from typing import Dict
 
 from user import Base, User
 
@@ -40,16 +41,15 @@ class DB:
             self._session.add(user)
             self._session.commit()
         except Exception as e:
-            print(f"Error adding user to database: {e}")
             self._session.rollback()
             raise
         return user
 
-    def find_user_by(self, **kwargs) -> User:
+    def find_user_by(self, **kwargs: Dict[str, str]) -> User:
         """Return the first row found based on the kwargs given"""
         session = self._session
         try:
-            user = session.query(User).filter_by(**kwargs).first()
+            user = session.query(User).filter_by(**kwargs).one()
         except NoResultFound:
             raise NoResultFound()
         except InvalidRequestError:
@@ -61,12 +61,12 @@ class DB:
         try:
             user = self.find_user_by(id=user_id)
         except NoResultFound:
-            raise ValueError
+            raise ValueError()
 
         col_names = User.__table__.columns.keys()
         for col in kwargs.keys():
             if col not in col_names:
-                raise ValueError
+                raise ValueError()
         for col, val in kwargs.items():
             setattr(user, col, val)
         self._session.commit()
