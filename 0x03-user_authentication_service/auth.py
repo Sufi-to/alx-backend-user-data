@@ -11,7 +11,7 @@ from uuid import uuid4
 from typing import Union
 
 
-def _hash_password(password) -> str:
+def _hash_password(password: str) -> str:
     """Returns a hashed and salted password in bytes"""
     byte_password = password.encode('utf-8')
     return bcrypt.hashpw(byte_password, bcrypt.gensalt())
@@ -81,7 +81,7 @@ class Auth:
         self._db.update_user(user.id, session_id=None)
         return None
 
-    def get_reset_password_token(self, email):
+    def get_reset_password_token(self, email: str) -> str:
         """Update the users reset_token if available"""
         try:
             user = self._db.find_user_by(email=email)
@@ -91,7 +91,7 @@ class Auth:
         self._db.update_user(user.id, reset_token=new_token)
         return new_token
 
-    def update_password(self, reset_token, password):
+    def update_password(self, reset_token: str, password: str) -> None:
         """Update the user password"""
         if reset_token is None or password is None:
             return None

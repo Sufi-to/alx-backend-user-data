@@ -11,13 +11,13 @@ AUTH = Auth()
 
 
 @app.route("/", methods=['GET'])
-def hello():
+def hello() -> str:
     """Return a simple message"""
     return jsonify({"message": "Bienvenue"})
 
 
 @app.route("/users", methods=['POST'])
-def register_user():
+def register_user() -> str:
     """Registers the user from an endpoint"""
     try:
         email = request.form.get('email')
@@ -33,7 +33,7 @@ def register_user():
 
 
 @app.route("/sessions", methods=["POST"])
-def login_user():
+def login_user() -> str:
     """Creates a new session id for a user"""
     try:
         email = request.form.get('email')
@@ -50,7 +50,7 @@ def login_user():
 
 
 @app.route("/sessions", methods=["DELETE"])
-def logout():
+def logout() -> str:
     """Deletes the user session_id if available"""
     session_id = request.cookies.get("session_id", None)
     if session_id is None:
@@ -63,7 +63,7 @@ def logout():
 
 
 @app.route("/profile", methods=["GET"])
-def profile():
+def profile() -> str:
     """Returns the users email if it exists"""
     session_id = request.cookies.get("session_id", None)
     if session_id is None:
@@ -75,7 +75,7 @@ def profile():
 
 
 @app.route("/reset_password", methods=["POST"])
-def get_reset_token():
+def get_reset_token() -> str:
     """Generate a new token"""
     try:
         email = request.form.get("email")
