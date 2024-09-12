@@ -36,31 +36,33 @@ class DB:
     def add_user(self, email: str, hashed_password: str) -> User:
         """Add user the database"""
         user = User(email=email, hashed_password=hashed_password)
-        self._session.add(user)
-        self._session.commit()
+        try:
+            self._session.add(user)
+            self._session.commit()
+        except Exception as e:
+            print(f"Error adding user to database: {e}")
+            self._session.rollback()
+            raise
         return user
 
     def find_user_by(self, **kwargs) -> User:
         """Return the first row found based on the kwargs given"""
-        if not kwargs:
-            raise InvalidRequestError
-        col_names = User.__table__.columns.keys()
-        for col in kwargs.keys():
-            if col not in col_names:
-                raise InvalidRequestError
-
-        user = self._session.query(User).filter_by(**kwargs).first()
-        if user is None:
-            raise NoResultFound
+        session = self._session
+        try:
+            user = session.query(User).filter_by(**kwargs).first()
+        except NoResultFound:
+            raise NoResultFound()
+        except InvalidRequestError:
+            raise InvalidRequestError()
         return user
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """Update the user using user_id and kwargs"""
-        if not user_id:
+        try:
+            user = self.find_user_by(id=user_id)
+        except NoResultFound:
             raise ValueError
-        user = self.find_user_by(id=user_id)
-        if not user:
-            raise ValueError
+
         col_names = User.__table__.columns.keys()
         for col in kwargs.keys():
             if col not in col_names:
