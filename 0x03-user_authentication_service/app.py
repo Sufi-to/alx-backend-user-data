@@ -16,7 +16,7 @@ def hello() -> str:
     return jsonify({"message": "Bienvenue"})
 
 
-@app.route("/users", methods=['POST'])
+@app.route("/users", methods=['POST'], strict_slashes=False)
 def register_user() -> str:
     """Registers the user from an endpoint"""
     email = request.form.get('email')
@@ -30,7 +30,7 @@ def register_user() -> str:
         return jsonify({"message": "email already registered"}), 400
 
 
-@app.route("/sessions", methods=["POST"])
+@app.route("/sessions", methods=["POST"], strict_slashes=False)
 def login_user() -> str:
     """Creates a new session id for a user"""
     email = request.form.get('email')
@@ -44,7 +44,7 @@ def login_user() -> str:
     return response
 
 
-@app.route("/sessions", methods=["DELETE"])
+@app.route("/sessions", methods=["DELETE"], strict_slashes=False)
 def logout() -> str:
     """Deletes the user session_id if available"""
     session_id = request.cookies.get("session_id", None)
@@ -57,7 +57,7 @@ def logout() -> str:
     return redirect("/")
 
 
-@app.route("/profile", methods=["GET"])
+@app.route("/profile", methods=["GET"], strict_slashes=False)
 def profile() -> str:
     """Returns the users email if it exists"""
     session_id = request.cookies.get("session_id", None)
@@ -69,8 +69,8 @@ def profile() -> str:
     return jsonify({"email": user.email}), 200
 
 
-@app.route("/reset_password", methods=["POST"])
-def get_reset_token() -> str:
+@app.route("/reset_password", methods=["POST"], strict_slashes=False)
+def get_reset_password_token() -> str:
     """Generate a new token"""
     email = request.form.get("email")
     try:
@@ -81,8 +81,8 @@ def get_reset_token() -> str:
     return jsonify({"email": email, "reset_token": reset_token}), 200
 
 
-@app.route('/reset_password', methods=['PUT'])
-def updatePassword() -> str:
+@app.route('/reset_password', methods=['PUT'], strict_slashes=False)
+def update_password() -> str:
     """Updates the user password"""
     email = request.form['email']
     reset_token = request.form['reset_token']

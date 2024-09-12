@@ -37,23 +37,22 @@ class DB:
     def add_user(self, email: str, hashed_password: str) -> User:
         """Add user the database"""
         user = User(email=email, hashed_password=hashed_password)
-        try:
-            self._session.add(user)
-            self._session.commit()
-        except Exception as e:
-            self._session.rollback()
-            raise
+        self._session.add(user)
+        self._session.commit()
         return user
 
     def find_user_by(self, **kwargs: Dict[str, str]) -> User:
         """Return the first row found based on the kwargs given"""
-        session = self._session
-        try:
-            user = session.query(User).filter_by(**kwargs).first()
-        except NoResultFound:
-            raise NoResultFound
-        except InvalidRequestError:
+        if not kwargs:
             raise InvalidRequestError
+        cols = User.__table__.columns.keys()
+        for key in kwargs.keys():
+            if key not in cols:
+                raise InvalidRequestError
+
+        user = self._session.query(User).filter_by(**kwargs).first()
+        if user is None:
+            raise NoResultFound
         return user
 
     def update_user(self, user_id: int, **kwargs) -> None:
