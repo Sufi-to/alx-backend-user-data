@@ -49,11 +49,11 @@ class DB:
         """Return the first row found based on the kwargs given"""
         session = self._session
         try:
-            user = session.query(User).filter_by(**kwargs).one()
+            user = session.query(User).filter_by(**kwargs).first()
         except NoResultFound:
-            raise NoResultFound()
+            raise NoResultFound
         except InvalidRequestError:
-            raise InvalidRequestError()
+            raise InvalidRequestError
         return user
 
     def update_user(self, user_id: int, **kwargs) -> None:
@@ -61,12 +61,12 @@ class DB:
         try:
             user = self.find_user_by(id=user_id)
         except NoResultFound:
-            raise ValueError()
+            raise ValueError
 
         col_names = User.__table__.columns.keys()
         for col in kwargs.keys():
             if col not in col_names:
-                raise ValueError()
+                raise ValueError
         for col, val in kwargs.items():
             setattr(user, col, val)
         self._session.commit()
