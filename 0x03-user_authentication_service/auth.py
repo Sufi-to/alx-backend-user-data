@@ -32,7 +32,7 @@ class Auth:
     def register_user(self, email: str, password: str) -> User:
         """Register a user to the database"""
         try:
-            user = self._db.find_user_by(email=email)
+            self._db.find_user_by(email=email)
         except (NoResultFound, InvalidRequestError):
             hashed_pass = _hash_password(password)
             return self._db.add_user(email, hashed_pass)
@@ -43,13 +43,12 @@ class Auth:
         """Validate the user login"""
         try:
             user = self._db.find_user_by(email=email)
+            user_pass = user.hashed_password
+            enc_pass = password.encode('utf-8')
+            if bcrypt.checkpw(enc_pass, user_pass):
+                return True
         except Exception:
             return False
-
-        user_pass = user.hashed_password
-        enc_pass = password.encode('utf-8')
-        if bcrypt.checkpw(enc_pass, user_pass):
-            return True
         return False
 
     def create_session(self, email: str) -> str:

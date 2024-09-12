@@ -10,7 +10,7 @@ app = Flask(__name__)
 AUTH = Auth()
 
 
-@app.route("/", methods=['GET'], strict_slashes=False)
+@app.route("/", methods=["GET"], strict_slashes=False)
 def hello() -> str:
     """Return a simple message"""
     return jsonify({"message": "Bienvenue"})
@@ -19,27 +19,22 @@ def hello() -> str:
 @app.route("/users", methods=['POST'])
 def register_user() -> str:
     """Registers the user from an endpoint"""
-    try:
-        email = request.form.get('email')
-        password = request.form.get('password')
-    except KeyError:
-        abort(400)
+    email = request.form.get('email')
+    password = request.form.get('password')
 
     try:
-        user = AUTH.register_user(email, password)
-    except Exception:
+        AUTH.register_user(email, password)
+        return jsonify({"email": email, "message": "user created"})
+
+    except ValueError:
         return jsonify({"message": "email already registered"}), 400
-    return jsonify({"email": email, "message": "user created"})
 
 
 @app.route("/sessions", methods=["POST"])
 def login_user() -> str:
     """Creates a new session id for a user"""
-    try:
-        email = request.form.get('email')
-        password = request.form.get('password')
-    except KeyError:
-        abort(400)
+    email = request.form.get('email')
+    password = request.form.get('password')
     validation = AUTH.valid_login(email, password)
     if not validation:
         abort(401)
@@ -77,11 +72,7 @@ def profile() -> str:
 @app.route("/reset_password", methods=["POST"])
 def get_reset_token() -> str:
     """Generate a new token"""
-    try:
-        email = request.form.get("email")
-    except KeyError:
-        abort(403)
-
+    email = request.form.get("email")
     try:
         reset_token = AUTH.get_reset_password_token(email)
     except ValueError:
@@ -93,12 +84,9 @@ def get_reset_token() -> str:
 @app.route('/reset_password', methods=['PUT'])
 def updatePassword() -> str:
     """Updates the user password"""
-    try:
-        email = request.form['email']
-        reset_token = request.form['reset_token']
-        new_password = request.form['new_password']
-    except KeyError:
-        abort(400)
+    email = request.form['email']
+    reset_token = request.form['reset_token']
+    new_password = request.form['new_password']
 
     try:
         AUTH.update_password(reset_token, new_password)
