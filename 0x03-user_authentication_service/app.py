@@ -6,9 +6,8 @@ from flask import Flask, jsonify, request, abort, redirect
 from auth import Auth
 
 
-AUTH = Auth()
 app = Flask(__name__)
-app.url_map.strict_slashes = False
+AUTH = Auth()
 
 
 @app.route("/", methods=['GET'])
