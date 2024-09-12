@@ -10,7 +10,7 @@ app = Flask(__name__)
 AUTH = Auth()
 
 
-@app.route("/", methods=['GET'])
+@app.route("/", methods=['GET'], strict_slashes=False)
 def hello() -> str:
     """Return a simple message"""
     return jsonify({"message": "Bienvenue"})
